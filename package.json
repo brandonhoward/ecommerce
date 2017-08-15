@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "build": "tsc -p src",
-    "build:watch": "tsc -w -p src",
+    "build": "tsc -p .",
+    "build:watch": "concurrently \"tsc -w -p .\" \" ng build -w \"",
     "serve": "nodemon server.js",
     "prestart": "npm run build",
     "start": "concurrently \"npm run build:watch\" \"npm run serve\"",

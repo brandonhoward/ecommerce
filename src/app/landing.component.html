@@ -1,8 +1,19 @@
 <div id="container">
     <h1>Landing Page</h1>
     <h3>Sign in or enter as guest</h3>
-    <div id='door'>
-        <button (click)="doSignIn()">Sign in</button>>
+    <div id="door">
+        <button (click)="doSignIn()">Sign in</button>
         <button (click)="doGuest()">Guest</button>
     </div>
-<div/>
+    <div id="data">
+        <!-- temp data pulled from api -->
+        <div *ngIf="users">
+            <div *ngFor="let user of users">
+                <p>user: {{user}}</p>
+            </div>
+            <div *ngIf="dataNum">
+                <h5>num: {{dataNum}}</h5>
+            </div>
+        </div>
+    </div>
+</div><!--container-->

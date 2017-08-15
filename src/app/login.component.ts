@@ -16,7 +16,7 @@ export class LoginComponent {
     }
 
     welcomeUser(): string {
-      return ("Hello " + this.user.username + ", welcome to the site.");
+      return ('Hello ' + this.user.username + ', welcome to the site.');
     }
 
     getUserDiagnostic(): string {
