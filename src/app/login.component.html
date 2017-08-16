@@ -1,5 +1,21 @@
 <div id="container">
-    <h3>Login page</h3>
-    <p>Hello Brandon, welcome to the site.</p>
-    <p>connected user: {{getUserDiagnostic()}}</p>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-group" style="margin-bottom: 1em">
+            <label class="center-block">Username:
+                <input class="form-control" style="margin-bottom: 1em; margin-top: 2em" formControlName="username">
+            </label>
+            <br>
+            <label class="center-block">Password:
+                <input class="form-control" formControlName="password">
+            </label>
+        </div>
+        <div style="margin-bottom: 1em">
+            <button type="submit">
+                Login
+            </button>
+        </div>
+    </form>
+
+    <p>loginForm value: {{loginForm.value | json}}</p>
+    <p>loginForm status: {{loginForm.status | json}}</p>
 </div>

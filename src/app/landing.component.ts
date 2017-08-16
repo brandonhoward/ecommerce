@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AppService } from './services/app.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -10,15 +11,13 @@ export class LandingComponent {
     users: string[];
     dataNum: number;
 
-    constructor(private appService: AppService) {
+    constructor(private appService: AppService, private router: Router) {
       this.appService = appService;
     }
 
     doSignIn() {
-      this.appService.getData().subscribe(data => {
-        this.users = data['users'];
-        this.dataNum = data['data'];
-      });
+      const link = ['/login'];
+      this.router.navigate(link);
     }
 
     doGuest() {
@@ -27,15 +26,5 @@ export class LandingComponent {
         username: 'bhoward',
         password: 'abc123'
       };
-
-      this.appService.postLogin(body).subscribe(data => {
-        const user = data['user'];
-        if (user) {
-          // TODO: create a logged in User object
-          alert('Logged in successfully with: ' + user.username);
-        } else {
-          alert('Failed to login');
-        }
-      });
     }
 }

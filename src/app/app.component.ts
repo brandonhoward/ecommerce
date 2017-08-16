@@ -1,3 +1,4 @@
+import { AppService } from './services/app.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -7,6 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  constructor() {}
+  constructor(private appService: AppService) {}
+
+  doLogout(): void {
+    this.appService.signOutUser();
+  }
 
 }

@@ -1,6 +1,9 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="container">
-  <h2>Home</h2>
+  <div *ngIf="appService.signedInUser">
+      <h2>Header and Navbar</h2>
+      <a class="logout" (click)="doLogout()">Logout</a>
+  </div>
   <nav class="navbar navbar-dark bg-primary">
     <div class="nav navbar-nav">
       <a routerLink="/" class="nav-item nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">

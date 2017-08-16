@@ -5,15 +5,4 @@
         <button (click)="doSignIn()">Sign in</button>
         <button (click)="doGuest()">Guest</button>
     </div>
-    <div id="data">
-        <!-- temp data pulled from api -->
-        <div *ngIf="users">
-            <div *ngFor="let user of users">
-                <p>user: {{user}}</p>
-            </div>
-            <div *ngIf="dataNum">
-                <h5>num: {{dataNum}}</h5>
-            </div>
-        </div>
-    </div>
 </div><!--container-->

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { FormBuilder, Validator, FormsModule } from '@angular/forms';
+import { AppService } from './services/app.service';
+import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import User from './../../src/app/actors/user';
 
 @Component({
@@ -8,18 +9,41 @@ import User from './../../src/app/actors/user';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+    signedInUser: User;
+    loginForm: FormGroup;
     title = 'Login';
-    user: User;
 
-    constructor() {
-      this.user = new User(2131, 'bhoward', 'abc123', new Date('02/18/1993'));
+    constructor(private fb: FormBuilder, private appService: AppService) {
+      this.createForm();
+      // this.signedInUser = new User(2131, 'bhoward', 'abc123', new Date('02/18/1993'));
     }
 
-    welcomeUser(): string {
-      return ('Hello ' + this.user.username + ', welcome to the site.');
+    onSubmit(): void {
+      if (this.loginForm.status === 'INVALID') { return; } // client side validation
+
+      const formModel = this.loginForm.value;
+      const body = {
+        username: formModel.username as string,
+        password: formModel.password as string
+      };
+
+      this.appService.postLogin(body).subscribe((data) => {
+        const user = data['user'];
+        if (user) {
+          this.appService.signInUser(user);
+          formModel.username = '';
+          formModel.password = '';
+        } else {
+          formModel.password = ''; //TODO: refresh view
+          alert('Failed to login');
+        }
+      });
     }
 
-    getUserDiagnostic(): string {
-      return this.user.toJson();
+    private createForm(): void {
+      this.loginForm = this.fb.group({
+        username: ['', Validators.required],
+        password: ['', Validators.required]
+      });
     }
 }
