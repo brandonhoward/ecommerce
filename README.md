@@ -1,5 +1,8 @@
 # HapiAngular
 
+# This project runs Angular 4+ for the client framework and Hapi.js for the server.
+# Run 'npm run start' to start the server and build the code.
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.7.
 
 ## Development server
