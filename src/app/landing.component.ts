@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { AppService } from './services/app.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -11,13 +10,12 @@ export class LandingComponent {
     users: string[];
     dataNum: number;
 
-    constructor(private appService: AppService, private router: Router) {
+    constructor(private appService: AppService) {
       this.appService = appService;
     }
 
     doSignIn() {
-      const link = ['/login'];
-      this.router.navigate(link);
+      this.appService.redirect('/login');
     }
 
     doGuest() {
@@ -26,5 +24,17 @@ export class LandingComponent {
         username: 'bhoward',
         password: 'abc123'
       };
+    }
+
+    doCreateAccount() {
+      this.appService.redirect('/create-account');
+    }
+
+    doForgotUsername() {
+      this.appService.redirect('/forgot-username');
+    }
+
+    doForgotPassword() {
+      this.appService.redirect('/forgot-password');
     }
 }

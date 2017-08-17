@@ -14,6 +14,14 @@ export class AppService {
 
     constructor(private http: HttpClient, private router: Router) { }
 
+    redirect(link): void {
+        if (typeof link === 'string') {
+            this.router.navigate([link]);
+        } else {
+            this.router.navigate(link);
+        }
+    }
+
     signInUser(user): void {
         this.signedInUser = user;
     }

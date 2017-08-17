@@ -21,21 +21,20 @@ export class LoginComponent {
     onSubmit(): void {
       if (this.loginForm.status === 'INVALID') { return; } // client side validation
 
-      const formModel = this.loginForm.value;
+      // const formModel = this.loginForm;
       const body = {
-        username: formModel.username as string,
-        password: formModel.password as string
+        username: this.loginForm.controls['username'].value as string,
+        password: this.loginForm.controls['password'].value as string
       };
 
       this.appService.postLogin(body).subscribe((data) => {
         const user = data['user'];
         if (user) {
           this.appService.signInUser(user);
-          formModel.username = '';
-          formModel.password = '';
+          this.loginForm.controls['username'].setValue('');
+          this.loginForm.controls['password'].setValue('');
         } else {
-          formModel.password = ''; //TODO: refresh view
-          alert('Failed to login');
+          this.loginForm.controls['password'].setValue('');
         }
       });
     }
