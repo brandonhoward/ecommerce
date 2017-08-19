@@ -15,13 +15,11 @@ export class LoginComponent {
 
     constructor(private fb: FormBuilder, private appService: AppService) {
       this.createForm();
-      // this.signedInUser = new User(2131, 'bhoward', 'abc123', new Date('02/18/1993'));
     }
 
     onSubmit(): void {
       if (this.loginForm.status === 'INVALID') { return; } // client side validation
 
-      // const formModel = this.loginForm;
       const body = {
         username: this.loginForm.controls['username'].value as string,
         password: this.loginForm.controls['password'].value as string
@@ -31,6 +29,8 @@ export class LoginComponent {
         const user = data['user'];
         if (user) {
           this.appService.signInUser(user);
+          // save the user in local storage
+          window.localStorage.setItem('user', JSON.stringify(user));
           this.loginForm.controls['username'].setValue('');
           this.loginForm.controls['password'].setValue('');
         } else {

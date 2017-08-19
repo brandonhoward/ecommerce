@@ -1,10 +1,13 @@
+import { Error404Component } from './errors/error404.component';
+import { Error401Component } from './errors/error401.component';
+import { AppInterceptor } from './interceptors/app.interceptor';
 import { AppService } from './services/app.service';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AboutComponent } from './about.component';
@@ -16,7 +19,9 @@ import { LandingComponent } from './landing.component';
     AppComponent,
     LandingComponent,
     LoginComponent,
-    AboutComponent
+    AboutComponent,
+    Error401Component,
+    Error404Component
   ],
   imports: [
     BrowserModule,
@@ -24,7 +29,11 @@ import { LandingComponent } from './landing.component';
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [AppService],
+  providers: [AppService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AppInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

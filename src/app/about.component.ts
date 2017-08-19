@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { AppService } from './services/app.service';
+import { Component, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-about',
@@ -6,5 +7,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent {
-    constructor() {}
+    @ViewChild('dataDump') dataDump;
+
+    constructor(private appService: AppService) {}
+
+    fetchRestrictedData(): void {
+      const token = this.appService.signedInUser ? this.appService.signedInUser.token : '';
+      this.appService.getData(token).subscribe((data) => {
+        this.dataDump.nativeElement.innerHTML = data['restrictedData'];
+      }, (err) => {
+
+      });
+    }
 }
