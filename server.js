@@ -2,24 +2,30 @@
 
 const Hapi = require('hapi');
 const Inert = require('inert');
+const Mongoose = require('mongoose');
 
-const server = new Hapi.Server();
+Mongoose.connect('mongodb://localhost');
+const userSchema = Mongoose.Schema({
+    username: String,
+    password: String,
+    dob: Date,
+    token: String
+});
+userSchema.methods.setToken = function(token) {
+    this.token = token;
+    console.log('set token field for the user');
+}
+
+const User = Mongoose.model('User', userSchema);
+
 const angRoutes = [
     'about',
-    'login'
+    'login',
+    'create'
 ];
-const AUTH_SECRET_KEY = 'MySecretKey'; // Never share the secret key
+const AUTH_SECRET_KEY = 'MySecretKey2'; // Never share the secret key
 
-const mockUserData = [ //TODO: eventually pull this from db
-    {
-        id: 2131,
-        username: 'bhoward',
-        password: 'abc123',
-        dob: new Date('02/18/1993'),
-        token: ''
-    }
-];
-
+const server = new Hapi.Server();
 server.connection({
     host: 'localhost',
     port: 8080
@@ -54,6 +60,11 @@ server.register(require('hapi-auth-jwt2'), function(err) {
             var payload = {
                 restrictedData: '1023486101010' + '.restrictedData' + '.112233445566778899'
             };
+            console.log('querying db for users...');
+            User.find(function(err, users) {
+                if (err) throw err;
+                console.log(users);
+            });
             reply(null, payload).header('Authorization', request.headers.authorization);
         }
     });
@@ -68,16 +79,15 @@ server.register(require('hapi-auth-jwt2'), function(err) {
             var body = request.payload['body'];
             var usr = body['username'];
             var pwd = body['password'];
-            var user = findUser(usr, pwd);
-            var resp = {
-                user: user
-            };
-            if (user) {
-                //TODO: actually generate this
-                user.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEzMX0.uW4NZ9ST-zchZ5Dm50jV3IiO4u76t1wCy6zcfbqgwj0';
-            }
-            
-            reply(null, resp);
+            User.findOne({username: usr}, function(err, user) {
+                if (err) { console.log('found error'); throw err;}
+                //TODO: generate token
+                if (user) {
+                    user.setToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJob3dhcmQiLCJwYXNzd29yZCI6ImFiYzEyMyIsImRvYiI6IjE5OTMtMDItMThUMDY6MDA6MDAuMDAwWiJ9.xmMiS-iJ1iLGabFdR0tmpiwy_8Ul4JAXJGsgI4yMy6Q');
+                    console.log('found an existing user: ' + user);                                    
+                }
+                reply(err, user);
+            });
         }
     });
 
@@ -100,6 +110,39 @@ server.register(require('hapi-auth-jwt2'), function(err) {
             }
 
             reply(null, resp).header('Authorization', request.headers.authorization);
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/api/create',
+        config: {
+            auth: false
+        },
+        handler: function(request, reply) {
+            var body = request.payload['body'];
+            //TODO: query for existing users with the same username
+            var resp = {
+                success: false
+            };
+            User.findOne({username: body['username']}, function(err, user) {
+                if (user) {
+                    // A user with that username already exists
+                    reply(null, resp);
+                } else {
+                    const user = new User({
+                        username: body['username'],
+                        password: body['password'],
+                        dob: body['dob'],
+                        token: '' // token does not persist in the db, but is instead set on successful user login
+                    });
+                    user.save(function(err, user) {
+                        if (err) throw err;
+                        resp.success = true;
+                        reply(null, resp);
+                    });
+                }
+            });
         }
     });
 
@@ -130,30 +173,35 @@ server.register(require('hapi-auth-jwt2'), function(err) {
     });
 });// end hapi-auth-jwt plugin
 
-server.register({
-    register: Inert
-}, function(err) {
-    if (err) throw err;
-    server.start((err) => {
+const db = Mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error: ' ));
+db.once('open', function() {
+    console.log('Database connected. Starting server...');
+    server.register({
+        register: Inert
+    }, function(err) {
         if (err) throw err;
-        console.log('Server is listening on ' + server.info.uri.toLowerCase())
+        server.start((err) => {
+            if (err) throw err;
+            console.log('Server is listening on ' + server.info.uri.toLowerCase())
+        });
     });
+    
 });
 
 /**
  * Helper functions
  */
 const validate = function(decoded, request, callback) {
-    //TODO: more validation checks
-    console.log("validating user");    
-    for (var i=0, count=mockUserData.length; i<count; i++) {
-        var user = mockUserData[i];
-        if (user.id === decoded.id) {
+    //TODO: more validation checks like add _id to the jwt
+    User.findOne({username: decoded.username, password: decoded.password, dob: decoded.dob}, function(err, user) {
+        if (err) { console.log('validation error'); throw err; }
+        if (user) {
             return callback(null, true);
         }
-    }
 
-    return callback(null, false);
+        return callback(null, false);
+    });
 };
 
 const isAngRoute = function(route) {
@@ -165,17 +213,4 @@ const isAngRoute = function(route) {
     }
 
     return false;
-};
-
-const findUser = function(name, pwd) {
-    for (var i=0, count=mockUserData.length; i < count; i++) {
-        var user = mockUserData[i];
-        if (user.username === name) {
-            if (user.password === pwd) {
-                return user;
-            }
-        }
-    }
-
-    return null;
 };

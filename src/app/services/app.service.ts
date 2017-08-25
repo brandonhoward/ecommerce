@@ -12,6 +12,7 @@ export class AppService {
     private dataUrl = '/api/data';
     private loginUrl = '/api/login';
     private logoutUrl = '/api/logout';
+    private createUrl = '/api/create';
 
     constructor(private http: HttpClient, private router: Router) { }
 
@@ -51,5 +52,9 @@ export class AppService {
     postLogout(body): Observable<any> {
         const myHeaders = new HttpHeaders().set('Authorization', 'Bearer ' + body.user.token);
         return this.http.post(this.logoutUrl, {'body': body}, {headers: myHeaders});
+    }
+
+    postCreate(body): Observable<any> {
+        return this.http.post(this.createUrl, {'body': body});
     }
 }

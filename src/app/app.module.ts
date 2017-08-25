@@ -1,3 +1,4 @@
+import { CreateUserComponent } from './create-user.component';
 import { Error404Component } from './errors/error404.component';
 import { Error401Component } from './errors/error401.component';
 import { AppInterceptor } from './interceptors/app.interceptor';
@@ -17,6 +18,7 @@ import { LandingComponent } from './landing.component';
 @NgModule({
   declarations: [
     AppComponent,
+    CreateUserComponent,
     LandingComponent,
     LoginComponent,
     AboutComponent,

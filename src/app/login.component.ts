@@ -26,15 +26,17 @@ export class LoginComponent {
       };
 
       this.appService.postLogin(body).subscribe((data) => {
-        const user = data['user'];
+        const user = data;
         if (user) {
           this.appService.signInUser(user);
           // save the user in local storage
           window.localStorage.setItem('user', JSON.stringify(user));
           this.loginForm.controls['username'].setValue('');
           this.loginForm.controls['password'].setValue('');
+          alert('Welcome: ' + user.username);
         } else {
           this.loginForm.controls['password'].setValue('');
+          alert('no user found with those credentials');
         }
       });
     }

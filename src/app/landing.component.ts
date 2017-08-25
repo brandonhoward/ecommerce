@@ -27,7 +27,7 @@ export class LandingComponent {
     }
 
     doCreateAccount() {
-      this.appService.redirect('/create-account');
+      this.appService.redirect('/create');
     }
 
     doForgotUsername() {

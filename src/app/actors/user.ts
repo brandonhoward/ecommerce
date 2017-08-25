@@ -1,12 +1,10 @@
 export default class User {
-    public id: number;
     public username: string;
     public password: string;
     public dob: Date;
     public token: string;
 
-    constructor(id, usn, pwd, dob, token) {
-        this.id = id;
+    constructor(usn, pwd, dob, token) {
         this.username = usn;
         this.password = pwd;
         this.dob = dob;

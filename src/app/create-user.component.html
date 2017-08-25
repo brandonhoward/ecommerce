@@ -1,0 +1,29 @@
+<div id="container">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-group" style="margin-bottom: 1em">
+            <label class="center-block">Username:
+                <input class="form-control" style="margin-bottom: 1em; margin-top: 2em" formControlName="username">
+            </label>
+            <br>
+            <label class="center-block">Password:
+                <input class="form-control" style="margin-bottom: 1em;" formControlName="password">
+            </label>
+            <br>
+            <label class="center-block">Confirm Password:
+                <input class="form-control" style="margin-bottom: 1em;" formControlName="confirmpassword">
+            </label>
+            <br>
+            <label class="center-block">Date of Birth:
+                <input class="form-control" style="margin-bottom: 1em;" formControlName="dob">
+            </label>
+        </div>
+        <div style="margin-bottom: 1em">
+            <button type="submit">
+                Create
+            </button>
+        </div>
+    </form>
+
+    <p>userForm value: {{userForm.value | json}}</p>
+    <p>userForm status: {{userForm.status | json}}</p>
+</div>
